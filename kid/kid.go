@@ -9,7 +9,7 @@ import (
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
 
-// KIDCfg is configuration for invoke KID chaincode
+// KIDCfg is configuration for invoking KID chaincode
 var KIDCfg struct {
 	CC   string            // chaincode name
 	Args map[bool][][]byte // arguments bytes array
