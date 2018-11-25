@@ -31,7 +31,7 @@ func (s *Set) Add(item string) {
 // AppendSet adds strings of the 'set' to the set
 func (s *Set) AppendSet(set *Set) {
 	s.safeMap()
-	for k := range s.m {
+	for k := range set.m {
 		s.m[k] = true
 	}
 }
