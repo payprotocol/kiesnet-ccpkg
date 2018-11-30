@@ -26,8 +26,7 @@
 
 ignored = [
   "github.com/hyperledger/fabric/core/chaincode/shim",
-  "github.com/hyperledger/fabric/protos/peer",
-  "github.com/hyperledger/fabric/protos/utils"
+  "github.com/hyperledger/fabric/protos/*"
 ]
 
 [prune]
