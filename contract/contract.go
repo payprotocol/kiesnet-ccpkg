@@ -53,7 +53,7 @@ func init() {
 
 // CreateContract invokes contract chaincode returns contract ID
 func CreateContract(stub shim.ChaincodeStubInterface, doc []byte, expiry int64, signers *stringset.Set) (*Contract, error) {
-	if nil == signers {
+	if nil == signers || signers.Size() < 2 {
 		return nil, errors.New("signers must be 2+")
 	}
 	expb := []byte(strconv.FormatInt(expiry, 10))
