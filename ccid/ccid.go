@@ -3,22 +3,33 @@
 package ccid
 
 import (
-	"github.com/golang/protobuf/proto"
+	"errors"
+
 	"github.com/hyperledger/fabric/core/chaincode/shim"
-	"github.com/hyperledger/fabric/protos/peer"
+	"github.com/hyperledger/fabric/protos/utils"
 )
 
 // GetID parses signed-proposal header and returns chaincode ID
 func GetID(stub shim.ChaincodeStubInterface) (string, error) {
-	proposal, err := stub.GetSignedProposal()
+	sp, err := stub.GetSignedProposal()
 	if err != nil {
 		return "", err
 	}
-	header := &peer.ChaincodeHeaderExtension{}
-	if err = proto.Unmarshal(proposal.GetProposalBytes(), header); err != nil {
+	proposal, err := utils.GetProposal(sp.GetProposalBytes())
+	if err != nil {
 		return "", err
 	}
-	path := header.GetChaincodeId().GetPath()
-	ei := path[7] + 8 // path[7]: id length
-	return path[8:ei], nil
+	invocation, err := utils.GetChaincodeInvocationSpec(proposal)
+	if err != nil {
+		return "", err
+	}
+	spec := invocation.GetChaincodeSpec()
+	if nil == spec {
+		return "", errors.New("failed to get chaincode spec")
+	}
+	id := spec.GetChaincodeId()
+	if nil == id {
+		return "", errors.New("failed to get chaincode ID")
+	}
+	return id.GetName(), nil
 }
