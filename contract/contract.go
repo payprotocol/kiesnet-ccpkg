@@ -11,6 +11,7 @@ import (
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"github.com/key-inside/kiesnet-ccpkg/stringset"
+	"github.com/key-inside/kiesnet-ccpkg/txtime"
 )
 
 // Contract _
@@ -25,12 +26,12 @@ func (c *Contract) GetID() string {
 }
 
 // GetExpiryTime _
-func (c *Contract) GetExpiryTime() (*time.Time, error) {
+func (c *Contract) GetExpiryTime() (*txtime.Time, error) {
 	t, err := time.Parse(time.RFC3339, c._map["expiry_time"].(string))
 	if err != nil {
 		return nil, err
 	}
-	return &t, nil
+	return &txtime.Time{Time: &t}, nil
 }
 
 // MarshalJSON _
