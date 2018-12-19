@@ -4,6 +4,7 @@ package txtime
 
 import (
 	"bytes"
+	"strings"
 	"time"
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
@@ -15,7 +16,7 @@ const RFC3339NanoFixed = "2006-01-02T15:04:05.000000000Z"
 
 // Time wraps go default time package
 type Time struct {
-	*time.Time
+	time.Time
 }
 
 // GetTime returns the *Time converted from TxTimestamp
@@ -24,14 +25,29 @@ func GetTime(stub shim.ChaincodeStubInterface) (*Time, error) {
 	if err != nil {
 		return nil, err
 	}
-	unixTime := time.Unix(ts.GetSeconds(), int64(ts.GetNanos()))
-	t := &Time{Time: &unixTime}
-	return t, nil
+	return Unix(ts.GetSeconds(), int64(ts.GetNanos())), nil
 }
 
-// FormatRFC3339Nano returns RFC3339Nano format string that forced nano parts
-func FormatRFC3339Nano(t time.Time) string {
-	return t.Format(RFC3339NanoFixed)
+// New _
+func New(t time.Time) *Time {
+	return &Time{t}
+}
+
+// Unix returns the local *Time corresponding to the given Unix time, sec seconds and nsec nanoseconds since January 1, 1970 UTC.
+// https://godoc.org/time#Unix
+func Unix(sec int64, nsec int64) *Time {
+	return &Time{time.Unix(sec, nsec)}
+}
+
+// Cmp - before returns -1, after returns 1, equal returns 0
+func (t *Time) Cmp(c *Time) int {
+	if t.Time.Before(c.Time) {
+		return -1
+	}
+	if t.Time.After(c.Time) {
+		return 1
+	}
+	return 0
 }
 
 // String returns RFC3339NanoFixed format string
@@ -42,7 +58,7 @@ func (t *Time) String() string {
 // MarshalJSON marshals Time as RFC3339NanoFixed format
 func (t *Time) MarshalJSON() ([]byte, error) {
 	buf := bytes.NewBuffer([]byte{'"'})
-	if _, err := buf.WriteString(FormatRFC3339Nano(*t.Time)); err != nil {
+	if _, err := buf.WriteString(t.String()); err != nil {
 		return nil, err
 	}
 	if err := buf.WriteByte('"'); err != nil {
@@ -57,10 +73,10 @@ func (t *Time) UnmarshalJSON(data []byte) error {
 	if str == "null" {
 		return nil
 	}
-	time, err := time.Parse(`"`+RFC3339NanoFixed+`"`, str)
+	time, err := time.Parse(RFC3339NanoFixed, strings.Trim(str, `"`))
 	if err != nil {
 		return err
 	}
-	t.Time = &time
+	t.Time = time
 	return nil
 }
