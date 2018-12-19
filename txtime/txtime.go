@@ -33,6 +33,15 @@ func New(t time.Time) *Time {
 	return &Time{t}
 }
 
+// Parse parses a RFC3339 formatted string and returns the time value it represents.
+func Parse(value string) (*Time, error) {
+	t, err := time.Parse(RFC3339NanoFixed, value)
+	if err != nil {
+		return nil, err
+	}
+	return New(t), nil
+}
+
 // Unix returns the local *Time corresponding to the given Unix time, sec seconds and nsec nanoseconds since January 1, 1970 UTC.
 // https://godoc.org/time#Unix
 func Unix(sec int64, nsec int64) *Time {

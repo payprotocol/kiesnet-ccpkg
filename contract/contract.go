@@ -7,7 +7,6 @@ import (
 	"errors"
 	"os"
 	"strconv"
-	"time"
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"github.com/key-inside/kiesnet-ccpkg/stringset"
@@ -27,11 +26,7 @@ func (c *Contract) GetID() string {
 
 // GetExpiryTime _
 func (c *Contract) GetExpiryTime() (*txtime.Time, error) {
-	t, err := time.Parse(time.RFC3339, c._map["expiry_time"].(string))
-	if err != nil {
-		return nil, err
-	}
-	return &txtime.Time{Time: &t}, nil
+	return txtime.Parse(c._map["expiry_time"].(string))
 }
 
 // MarshalJSON _
