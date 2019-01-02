@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
+	"github.com/pkg/errors"
 )
 
 // RFC3339NanoFixed -
@@ -25,7 +26,13 @@ func GetTime(stub shim.ChaincodeStubInterface) (*Time, error) {
 	if err != nil {
 		return nil, err
 	}
-	return Unix(ts.GetSeconds(), int64(ts.GetNanos())), nil
+	t := Unix(ts.GetSeconds(), int64(ts.GetNanos()))
+	// check fogery	±5 minutes
+	diff := time.Now().Sub(t.Time).Minutes()
+	if diff > 5 || diff < -5 {
+		return nil, errors.Errorf("txtime is out of bound (%.0f)", diff)
+	}
+	return t, nil
 }
 
 // New _
