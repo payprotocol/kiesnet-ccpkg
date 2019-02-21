@@ -1,1 +1,1 @@
-# Kiesnet Common Chaincode Packages
+# kiesnet common libraries
