@@ -30,7 +30,7 @@ func GetTime(stub shim.ChaincodeStubInterface) (*Time, error) {
 	// check fogery	±5 minutes
 	diff := time.Now().Sub(t.Time).Minutes()
 	if diff > 5 || diff < -5 {
-		return nil, errors.Errorf("txtime is out of bound (%.0f)", diff)
+		return nil, errors.Errorf("txtime is out of bound [%.0f]", diff)
 	}
 	return t, nil
 }
