@@ -9,8 +9,8 @@ import (
 	"strconv"
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
-	"github.com/key-inside/kiesnet-ccpkg/stringset"
-	"github.com/key-inside/kiesnet-ccpkg/txtime"
+	"github.com/payprotocol/kiesnet-ccpkg/stringset"
+	"github.com/payprotocol/kiesnet-ccpkg/txtime"
 )
 
 // Contract _
